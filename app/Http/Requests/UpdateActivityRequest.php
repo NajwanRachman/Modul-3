@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Activity;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateActivityRequest extends FormRequest
 {
@@ -18,7 +20,10 @@ class UpdateActivityRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'activity_date' => ['required', 'date'],
             'category' => ['required', 'string', 'max:50'],
-            'status' => ['required', 'in:Planned,Ongoing,Done'],
+            'status' => [
+                'required',
+                Rule::in(Activity::STATUSES),
+            ],
         ];
     }
 }
