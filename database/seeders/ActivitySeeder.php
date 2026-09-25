@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Activity;
+use Illuminate\Database\Seeder;
 
 class ActivitySeeder extends Seeder
 {
-    
     public function run(): void
     {
         Activity::query()->insert([

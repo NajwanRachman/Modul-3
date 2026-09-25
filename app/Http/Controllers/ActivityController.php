@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Models\Activity;
+use App\Services\ActivityService;
+use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -24,9 +26,11 @@ class ActivityController extends Controller
         return view('activities.create');
     }
 
-    public function store(StoreActivityRequest $request): RedirectResponse
-    {
-        $activity = Activity::create($request->validated());
+    public function store(
+        StoreActivityRequest $request,
+        ActivityService $service
+    ): RedirectResponse {
+        $activity = $service->create($request->validated());
 
         return redirect()
             ->route('activities.show', $activity)
@@ -45,9 +49,18 @@ class ActivityController extends Controller
 
     public function update(
         UpdateActivityRequest $request,
-        Activity $activity
+        Activity $activity,
+        ActivityService $service
     ): RedirectResponse {
-        $activity->update($request->validated());
+        try {
+            $service->update($activity, $request->validated());
+        } catch (DomainException $e) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'status' => $e->getMessage(),
+                ]);
+        }
 
         return redirect()
             ->route('activities.show', $activity)
