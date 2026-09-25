@@ -16,10 +16,22 @@
                 </a>
             </h2>
 
+            <a href="{{ route('activities.edit', $activity) }}">Edit</a>
+
             <p>{{ $activity->description }}</p>
             <p>Tanggal: {{ $activity->activity_date }}</p>
             <p>Kategori: {{ $activity->category }}</p>
             <p>Status: {{ $activity->status }}</p>
+        <form
+            action="{{ route('activities.destroy', $activity) }}"
+            method="POST"
+            onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?')"
+        >
+            @csrf
+            @method('DELETE')
+
+            <button type="submit">Hapus</button>
+        </form>
         </article>
 
         <hr>
