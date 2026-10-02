@@ -34,8 +34,12 @@
 
     <div style="margin-bottom: 20px;">
         <a href="{{ route('activities.create') }}" class="btn btn-primary">
-            + Tambah Kegiatan
-        </a>
+    + Tambah Kegiatan
+    </a>
+
+    <a href="{{ route('activities.trash') }}" class="btn btn-secondary">
+    🗑 Trash
+    </a>
     </div>
 
     <div class="filter-card">
@@ -242,7 +246,6 @@
         {{ $activities->links() }}
     </div>
 
-    <!-- INFO DATA -->
     <p class="result-info">
         Menampilkan
         {{ $activities->firstItem() ?? 0 }}
