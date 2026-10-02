@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RegistrationController;
 
 Route::get(
     'activities/trash',
@@ -24,3 +24,8 @@ Route::post(
     'activities/{activity}/complete',
     [ActivityController::class, 'complete']
 )->name('activities.complete');
+
+Route::post(
+    'activities/{activity}/registrations',
+    [RegistrationController::class, 'store']
+)->name('activities.registrations.store');

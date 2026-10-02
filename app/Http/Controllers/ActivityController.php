@@ -10,6 +10,7 @@ use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class ActivityController extends Controller
 {
@@ -66,15 +67,28 @@ class ActivityController extends Controller
     }
 
     public function store(
-        StoreActivityRequest $request,
-        ActivityService $service
-    ): RedirectResponse {
-        $activity = $service->create($request->validated());
+    StoreActivityRequest $request,
+    ActivityService $service
+): RedirectResponse {
+    $data = $request->validated();
 
-        return redirect()
-            ->route('activities.show', $activity)
-            ->with('success', 'Kegiatan berhasil ditambahkan.');
+    $poster = $request->file('poster');
+    unset($data['poster']);
+
+    $activity = $service->create($data);
+
+    if ($poster) {
+        $path = $poster->store('posters', 'public');
+
+        $activity->update([
+            'poster_path' => $path,
+        ]);
     }
+
+    return redirect()
+        ->route('activities.index')
+        ->with('success', 'Kegiatan berhasil dibuat.');
+}
 
     public function show(Activity $activity): View
     {
@@ -86,24 +100,103 @@ class ActivityController extends Controller
         return view('activities.edit', compact('activity'));
     }
 
-    public function update(
-        UpdateActivityRequest $request,
+   public function update(
+    UpdateActivityRequest $request,
+    Activity $activity,
+    ActivityService $service
+): RedirectResponse {
+    $data = $request->validated();
+
+    $poster = $request->file('poster');
+    unset($data['poster']);
+
+    $oldPosterPath = $activity->poster_path;
+
+    $service->update($activity, $data);
+
+    if ($poster) {
+        $newPosterPath = $poster->store('posters', 'public');
+
+        $activity->update([
+            'poster_path' => $newPosterPath,
+        ]);
+
+        if ($oldPosterPath) {
+            Storage::disk('public')->delete($oldPosterPath);
+        }
+    }
+
+    return redirect()
+        ->route('activities.show', $activity)
+        ->with('success', 'Kegiatan berhasil diperbarui.');
+}
+
+        public function publish(
         Activity $activity,
         ActivityService $service
     ): RedirectResponse {
         try {
-            $service->update($activity, $request->validated());
+            $service->publish($activity);
         } catch (DomainException $e) {
             return back()
-                ->withInput()
                 ->withErrors([
                     'status' => $e->getMessage(),
                 ]);
         }
 
+        return back()->with(
+            'success',
+            'Kegiatan berhasil dipublikasikan.'
+        );
+    }
+
+    public function complete(
+        Activity $activity,
+        ActivityService $service
+    ): RedirectResponse {
+        try {
+            $service->complete($activity);
+        } catch (DomainException $e) {
+            return back()
+                ->withErrors([
+                    'status' => $e->getMessage(),
+                ]);
+        }
+
+        return back()->with(
+            'success',
+            'Kegiatan berhasil diselesaikan.'
+        );
+    }
+
+    public function destroy(Activity $activity): RedirectResponse
+    {
+        $activity->delete();
+
         return redirect()
-            ->route('activities.show', $activity)
-            ->with('success', 'Kegiatan berhasil diperbarui.');
+            ->route('activities.index')
+            ->with('success', 'Kegiatan berhasil dihapus.');
+    }
+
+        public function trash(): View
+    {
+        $activities = Activity::onlyTrashed()
+            ->with('category')
+            ->latest('deleted_at')
+            ->get();
+
+        return view('activities.trash', compact('activities'));
+    }
+
+    public function restore(int $id): RedirectResponse
+    {
+        $activity = Activity::onlyTrashed()->findOrFail($id);
+
+        $activity->restore();
+
+        return redirect()
+            ->route('activities.trash')
+            ->with('success', 'Kegiatan berhasil dipulihkan.');
     }
 
    

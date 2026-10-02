@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreActivityRequest extends FormRequest
 {
@@ -55,6 +54,11 @@ class StoreActivityRequest extends FormRequest
                 'min:1',
                 'max:500',
             ],
+
+            'poster' => 
+            ['nullable',
+             'image',
+              'max:2048'],
         ];
     }
 }

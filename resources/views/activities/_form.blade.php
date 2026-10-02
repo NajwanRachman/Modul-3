@@ -1,3 +1,4 @@
+
 <div>
     <label for="category_id">Kategori</label>
     <select id="category_id" name="category_id">
@@ -128,5 +129,19 @@
 
     @error('capacity')
         <div>{{ $message }}</div>
+    @enderror
+</div>
+
+<div class="field">
+    <label for="poster">Poster Kegiatan</label>
+    <input
+        type="file"
+        id="poster"
+        name="poster"
+        accept="image/*"
+    >
+
+    @error('poster')
+        <small>{{ $message }}</small>
     @enderror
 </div>

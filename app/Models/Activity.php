@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Activity extends Model
 {
     use SoftDeletes;
-    
+
     public const STATUSES = [
         'draft',
         'published',
@@ -27,6 +27,7 @@ class Activity extends Model
         'location',
         'capacity',
         'status',
+        'poster_path',
     ];
 
     protected $casts = [

@@ -9,7 +9,11 @@
 
     <h1>Edit Kegiatan</h1>
 
-    <form action="{{ route('activities.update', $activity) }}" method="POST">
+        <form
+        action="{{ route('activities.update', $activity) }}"
+        method="POST"
+        enctype="multipart/form-data"
+        >
         @csrf
         @method('PUT')
 
