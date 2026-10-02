@@ -9,27 +9,36 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Activity extends Model
 {
     public const STATUSES = [
-        'Planned',
-        'Ongoing',
-        'Done',
+        'draft',
+        'published',
+        'completed',
     ];
 
     protected $fillable = [
+        'category_id',
+        'code',
         'title',
         'description',
-        'activity_date',
-        'category',
-        'category_id',
+        'start_at',
+        'end_at',
+        'location',
+        'capacity',
         'status',
+    ];
+
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+        'capacity' => 'integer',
     ];
 
     public function category(): BelongsTo
     {
-    return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function registrations(): HasMany
     {
-    return $this->hasMany(Registration::class);
+        return $this->hasMany(Registration::class);
     }
 }

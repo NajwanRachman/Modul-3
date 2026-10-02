@@ -14,19 +14,51 @@ use Illuminate\View\View;
 class ActivityController extends Controller
 {
     public function index(Request $request): View
-    {
-        $status = $request->query('status');
+{
+    $search = $request->query('search');
+    $categoryId = $request->query('category_id');
+    $status = $request->query('status');
+    $sort = $request->query('sort', 'newest');
 
-        $activities = Activity::query()
-            ->when(
-                in_array($status, ['Planned', 'Ongoing', 'Done'], true),
-                fn ($query) => $query->where('status', $status)
-            )
-            ->orderBy('activity_date')
-            ->get();
+    $activities = Activity::query()
+        ->with('category')
+        ->when(
+            $search,
+            fn ($query) => $query->where(function ($query) use ($search) {
+                $query->where('code', 'like', "%{$search}%")
+                    ->orWhere('title', 'like', "%{$search}%");
+            })
+        )
+        ->when(
+            $categoryId,
+            fn ($query) => $query->where('category_id', $categoryId)
+        )
+        ->when(
+            in_array($status, Activity::STATUSES, true),
+            fn ($query) => $query->where('status', $status)
+        )
+        ->when(
+            $sort === 'oldest',
+            fn ($query) => $query->orderBy('start_at', 'asc')
+        )
+        ->when(
+            $sort !== 'oldest',
+            fn ($query) => $query->orderBy('start_at', 'desc')
+        )
+        ->paginate(10)
+        ->withQueryString();
 
-        return view('activities.index', compact('activities', 'status'));
-    }
+    $categories = \App\Models\Category::orderBy('name')->get();
+
+    return view('activities.index', compact(
+        'activities',
+        'categories',
+        'search',
+        'categoryId',
+        'status',
+        'sort'
+    ));
+}
 
     public function create(): View
     {
@@ -73,6 +105,44 @@ class ActivityController extends Controller
             ->route('activities.show', $activity)
             ->with('success', 'Kegiatan berhasil diperbarui.');
     }
+
+    public function publish(
+    Activity $activity,
+    ActivityService $service
+): RedirectResponse {
+    try {
+        $service->publish($activity);
+    } catch (DomainException $e) {
+        return back()
+            ->withErrors([
+                'status' => $e->getMessage(),
+            ]);
+    }
+
+    return back()->with(
+        'success',
+        'Kegiatan berhasil dipublikasikan.'
+    );
+}
+
+public function complete(
+    Activity $activity,
+    ActivityService $service
+): RedirectResponse {
+    try {
+        $service->complete($activity);
+    } catch (DomainException $e) {
+        return back()
+            ->withErrors([
+                'status' => $e->getMessage(),
+            ]);
+    }
+
+    return back()->with(
+        'success',
+        'Kegiatan berhasil diselesaikan.'
+    );
+}
 
     public function destroy(Activity $activity): RedirectResponse
     {

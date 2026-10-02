@@ -1,0 +1,224 @@
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+
+.page-header {
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    margin-bottom: 5px;
+    color: #2563eb;
+}
+
+.page-header p {
+    color: #64748b;
+}
+
+
+.btn {
+    display: inline-block;
+    padding: 9px 15px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-secondary {
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+    color: white;
+}
+
+.btn-success {
+    background-color: #16a34a;
+    color: white;
+}
+
+
+.filter-card {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 10px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input,
+select,
+textarea {
+    padding: 9px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+
+
+.activity-list {
+    display: grid;
+    gap: 15px;
+}
+
+.activity-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.activity-card h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.activity-card h2 a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.activity-card h2 a:hover {
+    text-decoration: underline;
+}
+
+.activity-card p {
+    margin: 7px 0;
+    color: #64748b;
+}
+
+.activity-card strong {
+    color: #1e293b;
+}
+
+.activity-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-draft {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-published {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-completed {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.alert {
+    background-color: #dcfce7;
+    color: #166534;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+
+.pagination {
+    margin-top: 25px;
+}
+
+.result-info {
+    color: #64748b;
+    font-size: 14px;
+}
+
+@media (max-width: 800px) {
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-actions {
+        flex-wrap: wrap;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .activity-card {
+        padding: 15px;
+    }
+
+    .page-header h1 {
+        font-size: 26px;
+    }
+    
+    .inline-form {
+    display: inline;
+    }
+
+}

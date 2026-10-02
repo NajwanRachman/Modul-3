@@ -1,4 +1,43 @@
 <div>
+    <label for="category_id">Kategori</label>
+    <select id="category_id" name="category_id">
+        <option value="">-- Pilih Kategori --</option>
+
+        @foreach (\App\Models\Category::orderBy('name')->get() as $category)
+            <option
+                value="{{ $category->id }}"
+                @selected(
+                    (string) old(
+                        'category_id',
+                        $activity->category_id ?? ''
+                    ) === (string) $category->id
+                )
+            >
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+
+    @error('category_id')
+        <div>{{ $message }}</div>
+    @enderror
+</div>
+
+<div>
+    <label for="code">Kode Kegiatan</label>
+    <input
+        type="text"
+        id="code"
+        name="code"
+        value="{{ old('code', $activity->code ?? '') }}"
+    >
+
+    @error('code')
+        <div>{{ $message }}</div>
+    @enderror
+</div>
+
+<div>
     <label for="title">Judul</label>
     <input
         type="text"
@@ -25,47 +64,69 @@
 </div>
 
 <div>
-    <label for="activity_date">Tanggal</label>
+    <label for="start_at">Mulai</label>
     <input
-        type="date"
-        id="activity_date"
-        name="activity_date"
-        value="{{ old('activity_date', $activity->activity_date ?? '') }}"
+        type="datetime-local"
+        id="start_at"
+        name="start_at"
+        value="{{ old(
+            'start_at',
+            isset($activity->start_at)
+                ? $activity->start_at->format('Y-m-d\TH:i')
+                : ''
+        ) }}"
     >
 
-    @error('activity_date')
+    @error('start_at')
         <div>{{ $message }}</div>
     @enderror
 </div>
 
 <div>
-    <label for="category">Kategori</label>
+    <label for="end_at">Selesai</label>
+    <input
+        type="datetime-local"
+        id="end_at"
+        name="end_at"
+        value="{{ old(
+            'end_at',
+            isset($activity->end_at)
+                ? $activity->end_at->format('Y-m-d\TH:i')
+                : ''
+        ) }}"
+    >
+
+    @error('end_at')
+        <div>{{ $message }}</div>
+    @enderror
+</div>
+
+<div>
+    <label for="location">Lokasi</label>
     <input
         type="text"
-        id="category"
-        name="category"
-        value="{{ old('category', $activity->category ?? '') }}"
+        id="location"
+        name="location"
+        value="{{ old('location', $activity->location ?? '') }}"
     >
 
-    @error('category')
+    @error('location')
         <div>{{ $message }}</div>
     @enderror
 </div>
 
 <div>
-    <label for="status">Status</label>
-    <select id="status" name="status">
-        @foreach (['Planned', 'Ongoing', 'Done'] as $status)
-            <option
-                value="{{ $status }}"
-                @selected(old('status', $activity->status ?? '') === $status)
-            >
-                {{ $status }}
-            </option>
-        @endforeach
-    </select>
+    <label for="capacity">Kapasitas</label>
+    <input
+        type="number"
+        id="capacity"
+        name="capacity"
+        min="1"
+        max="500"
+        value="{{ old('capacity', $activity->capacity ?? '') }}"
+    >
 
-    @error('status')
+    @error('capacity')
         <div>{{ $message }}</div>
     @enderror
 </div>
